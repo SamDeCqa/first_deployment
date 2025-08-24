@@ -10,6 +10,7 @@
 
 <body class="overflow-x-hidden min-h-screen" x-data="{ 
     showLogin: false, 
+    showRegister: false,
     showNavbar: true, 
     showFeatures: false, 
     showHome: true,
@@ -34,14 +35,15 @@
 
                 <!-- Error Message -->
                 @if (session('error'))
-                <div class="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl shadow-lg z-50"
+                <div class="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 h-fit w-64 rounded-xl shadow-lg z-50"
                     x-data="{ showNotification: true }"
-                    x-init="setTimeout(() => showNotification = false, 3000)"
+                    x-init="setTimeout(() => showNotification = false, 4000)"
                     x-show="showNotification"
                     x-transition.duration.500ms>
-                    <p>{{ session('error') }}</p>
+                    <p>{{ session('error')  }}</p>
                 </div>
                 @endif
+
     
     <video src="{{ asset('background/vid2.mp4') }}"
         class="fixed top-0 left-0 w-full h-full object-cover -z-10"
@@ -87,9 +89,7 @@
                     <p class="text-lg font-bold text-violet-200">{{ config('app.name') }}</p>
                     <button @click="mobileMenuOpen = !mobileMenuOpen"
                         class="text-slate-50 hover:text-violet-200 transition-colors duration-300 p-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
+                        <x-heroicon-s-bars-3 class="text-gray-500 w-6 h-6"/>
                     </button>
                 </div>
 
@@ -236,19 +236,73 @@
 
                             <button type="submit"
                                 class="w-full bg-orange-500 hover:bg-orange-600 h-12 rounded-xl text-slate-50 font-semibold 
-                                           active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2">
+                                           active:scale-95 transition-all duration-300">
                                 Sign In
                             </button>
                         </form>
 
                         <div class="text-center mt-6">
-                            <button @click="showHome = true; showLogin = false; activeSection = 'home'"
-                                class="text-orange-600 hover:text-orange-700 font-medium transition-colors duration-300">
-                                Back to Home
+                            <button @click="showRegister = true; showLogin = false" class="text-sm text-blue-600 font-semibold underline cursor-pointer">
+                                Don't have an account? Register
                             </button>
                         </div>
                     </div>
                 </div>
+            </div>
+<!--  HII YA MSTARI WA CHINI -->
+            <div class="h-fit w-[42rem] mx-auto p-8 bg-gradient-to-tr from-orange-800 to-orange-100 rounded-2xl" x-show="showRegister" >
+                <p class="text-3xl text-orange-500 text-center font-bold mb-6">Register</p>
+                <form action="{{ route('register') }}" class="grid" method="post">
+                    @csrf
+                    <div class="mb-6">
+                        <input type="text" name="name" 
+                                placeholder="Username..." 
+                                class="border border-orange-400 bg-orange-200 focus:outline-none focus:border-2 rounded-lg px-4 h-12 text-xl text-gray-700 w-[25rem]">
+                        @error('name')
+                            <p class="text-xs text-red-600 italic font-semibold">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="mb-6">
+                        <input type="email" name="email" 
+                                placeholder="Your Email...." 
+                                class="border border-orange-400 bg-orange-200 focus:outline-none focus:border-2 rounded-lg px-4 h-12 text-xl text-gray-700 w-[25rem]">
+                        @error('email')
+                            <p class="text-xs text-red-600 italic font-semibold">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="mb-6">
+                        <input type="text" name="phone" 
+                                placeholder="Phone Number..." 
+                                class="border border-orange-400 bg-orange-200 focus:outline-none focus:border-2 rounded-lg px-4 h-12 text-xl text-gray-700 w-[25rem]">
+                        @error('phone')
+                            <p class="text-xs text-red-600 italic font-semibold">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="flex gap-4">
+                         <div>
+                            <input type="password"  name="password" 
+                                    placeholder="Password..."
+                                    class="border border-orange-400 bg-orange-200 focus:outline-none focus:border-2 rounded-lg px-4 h-12 text-xl text-gray-700">
+                            @error('password')
+                                <p class="text-xs text-red-600 italic font-semibold">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <input type="password" name="passwordConfirmation" 
+                                    placeholder="Confirm Password"
+                                    class="border border-orange-400 bg-orange-200 focus:outline-none focus:border-2 rounded-lg px-4 h-12 text-xl text-gray-700">
+                            @error('passwordConfirmation<p class="text-xs text-red-600 italic font-semibold">{{ $message }}</p>')
+                               <p class="text-xs text-red-600 italic font-semibold">{{ $message }}</p> 
+                            @enderror
+                        </div>
+                    </div>
+
+                    <button type="submit" @click="showLogin = false; showRegister = true" class="flex justify-center items-center w-96 mx-auto my-6 py-2 bg-orange-600 rounded-xl active:scale-95 duration-300 text-slate-50 font-semibold">Register</button>
+
+                    <p @click="showLogin = true; showRegister = false" class="text-sm text-center text-blue-600 font-semibold cursor-pointer underline">Already have an account? Login</p>
+                    
+                </form>
             </div>
 
         </div>

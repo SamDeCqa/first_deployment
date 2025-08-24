@@ -3,12 +3,46 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
+
+
+    public function register(Request $request){
+
+        try{
+            $request->validate([
+                'name' => 'required|min:3',
+                'email' => 'required|email',
+                'phone' => ['required','regex:/^(\+\d{1,3}\s?\d{9}|0[67]\d{8})$/'],
+                'password' => ['required','min:6','regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).+$/'],
+                'passwordConfirmation' => 'required|same:password'
+            ]);
+
+            User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'password' => $request->password,
+            ]);
+
+            session()->flash('success','New Account Created!');
+            return back();
+        }catch (\Exception $e){
+            Log::info($e);
+            session()->flash('error','Account not Created!Enter valid PhoneNo. and password mixed of letters numbers and symbols');
+            return back();
+        }
+
+    }
+
+
+
+
     public function index(){
 
     $projects = Project::where('user_id', Auth::id())
@@ -29,6 +63,11 @@ class UserController extends Controller
                             ->count();                            
         return view('userPages.userDashboard', compact('projects','completed','pending','inProgress'));
     }
+
+
+
+
+
 
     public function getProjects(Request $request){
 
@@ -58,6 +97,10 @@ class UserController extends Controller
         return view('userPages.userProjects', compact('projects','completed','pending','inProgress'));
     }
 
+
+
+
+
     public function save(Request $request){
         try{
             $request->validate([
@@ -80,6 +123,11 @@ class UserController extends Controller
             return back();
         }
     }
+
+
+
+
+
 
     public function edit(Request $request){
         try{
@@ -104,6 +152,12 @@ class UserController extends Controller
             return back();
         }
     }
+
+
+
+
+
+
 
     public function delete(Request $request) {
         try{
